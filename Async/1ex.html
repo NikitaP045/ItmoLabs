@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="https://kodaktor.ru/j/out"></script>
+<body>
+    <button>Поехали</button>
+    <ol id="values">
+        <li>10</li>
+        <li>20</li>
+        <li>30</li>
+    </ol>
+    <ol id="urls">
+        <li>https://kodaktor.ru/api/m/</li>
+        <li>https://kodaktor.ru/api/MS2/</li>
+        <li>https://kodaktor.ru/api/MS3/</li>
+    </ol>
+
+    <script>
+        let result = '';
+        const values = Array.from(document.querySelectorAll('ol#values li')).map(item => Number(item.innerHTML));
+        const URLs = Array.from(document.querySelectorAll('ol#urls li')).map(item => item.innerHTML);
+
+        document
+        .querySelector('button')
+        .addEventListener('click',
+            async ({ target: t }) => {
+                t.textContent = 'Ожидание';
+                const headers = { 'Content-Type': 'application/json' };
+                const resSerivces = [];
+                for (let i = 0; i < URLs.length; i++) {
+                    const chain = resSerivces.length > 0 ? `/${resSerivces[resSerivces.length - 1]}` : '';
+                    const resSerivce = await fetch(URLs[i] + values[i] + chain, { headers }).then(response => response.json());
+                    resSerivces.push(resSerivce.result);
+                }
+                result = resSerivces.join(' ');
+                Out.log(result);
+            }
+        );
+    </script>
+
+</body>
+</html>
